@@ -45,12 +45,40 @@ body {
   margin-bottom: 32px;
 }
 
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
 .header h1 {
   font-size: 1.5rem;
   font-weight: 700;
   letter-spacing: 0.02em;
-  margin-bottom: 20px;
   color: var(--text);
+}
+
+.help-btn {
+  position: absolute;
+  right: 0;
+  padding: 8px 16px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: var(--surface);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s, border-color 0.2s;
+}
+
+.help-btn:hover {
+  color: var(--text);
+  background: var(--surface-2);
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
 .pagination {
@@ -627,6 +655,130 @@ body {
   font-weight: 600;
 }
 
+/* Help modal */
+.help-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.help-modal.hidden {
+  display: none;
+}
+
+.help-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 20, 25, 0.85);
+}
+
+.help-card {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  max-height: 85vh;
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
+}
+
+.help-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  flex-shrink: 0;
+}
+
+.help-header h2 {
+  font-size: 1.15rem;
+}
+
+.help-close {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.help-close:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.help-body {
+  padding: 20px 24px 24px;
+  overflow-y: auto;
+}
+
+.help-section {
+  margin-bottom: 24px;
+}
+
+.help-section:last-child {
+  margin-bottom: 0;
+}
+
+.help-section h3 {
+  font-size: 0.95rem;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+
+.help-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.help-section li {
+  position: relative;
+  padding-left: 16px;
+  margin-bottom: 8px;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+.help-section li::before {
+  content: "·";
+  position: absolute;
+  left: 0;
+  color: var(--text-muted);
+}
+
+.help-section li strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.help-section kbd {
+  display: inline-block;
+  padding: 1px 6px;
+  background: var(--surface-2);
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text);
+}
+
 @media (max-width: 480px) {
   .number-display {
     font-size: 3.2rem;
@@ -656,5 +808,18 @@ body {
 
   .task3-instruction {
     font-size: 0.9rem;
+  }
+
+  .header-top {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .help-btn {
+    position: static;
+  }
+
+  .help-card {
+    max-height: 90vh;
   }
 }
