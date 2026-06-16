@@ -655,6 +655,63 @@ body {
   font-weight: 600;
 }
 
+/* Questionnaire modal */
+.questionnaire-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.questionnaire-modal.hidden {
+  display: none;
+}
+
+.questionnaire-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 20, 25, 0.9);
+}
+
+.questionnaire-card {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  background: var(--surface);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+  padding: 24px;
+  text-align: center;
+}
+
+.questionnaire-card h2 {
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+}
+
+.questionnaire-text {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 16px;
+}
+
+.questionnaire-image {
+  width: 100%;
+  max-width: 320px;
+  display: block;
+  margin: 0 auto 16px;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.questionnaire-btn {
+  min-width: 160px;
+}
+
 /* Help modal */
 .help-modal {
   position: fixed;

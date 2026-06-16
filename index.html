@@ -176,6 +176,16 @@
     </section>
   </div>
 
+  <div class="questionnaire-modal hidden" id="questionnaire-modal" role="dialog" aria-modal="true" aria-labelledby="questionnaire-title" aria-hidden="true">
+    <div class="questionnaire-backdrop"></div>
+    <div class="questionnaire-card">
+      <h2 id="questionnaire-title">基线问卷</h2>
+      <p class="questionnaire-text" id="questionnaire-text">请先扫码填写问卷，再开始后续任务。</p>
+      <img src="questionnaire/baseline.png" alt="基线问卷二维码" class="questionnaire-image" id="questionnaire-image" />
+      <button type="button" class="confirm-btn questionnaire-btn" id="questionnaire-close">我已完成</button>
+    </div>
+  </div>
+
   <div class="help-modal hidden" id="help-modal" role="dialog" aria-modal="true" aria-labelledby="help-title" aria-hidden="true">
     <div class="help-backdrop" id="help-backdrop"></div>
     <div class="help-card">
@@ -222,6 +232,7 @@
 
   <script src="js/sounds.js"></script>
   <script src="js/session.js"></script>
+  <script src="js/questionnaire.js"></script>
   <script src="js/task1.js"></script>
   <script src="js/task2.js"></script>
   <script src="js/task3.js"></script>

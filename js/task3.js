@@ -99,10 +99,12 @@ const Task3 = (() => {
     clearDoneTimer();
     doneTimer = setTimeout(() => {
       doneTimer = null;
-      state = "idle";
       showOverlay(false);
-      resetTimerUI();
-      showStartPanel(true);
+      Questionnaire.show("t1", () => {
+        state = "idle";
+        resetTimerUI();
+        showStartPanel(true);
+      });
     }, 2000);
   }
 

@@ -49,4 +49,5 @@
   Task1.init();
   Task2.init();
   Task3.init();
+  Questionnaire.init();
 })();
