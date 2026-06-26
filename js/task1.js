@@ -4,6 +4,7 @@
 const Task1 = (() => {
   const ANSWER_TIME = 5000;
   const PUNISH_TIME = 5000;
+  const SESSION_TIME = 300000;
   const SUBTRACT = 13;
 
   let currentNumber = 0;
@@ -158,12 +159,19 @@ const Task1 = (() => {
     Sfx.playError();
 
     clearPunishTimer();
-    punishTimer = setTimeout(() => {
-      punishTimer = null;
-      if (state === "punishment") {
-        beginRound();
-      }
-    }, PUNISH_TIME);
+    punishTimer = setTimeout(dismissPunishment, PUNISH_TIME);
+  }
+
+  function dismissPunishment() {
+    if (state !== "punishment") return;
+    clearPunishTimer();
+    beginRound();
+  }
+
+  function onPunishmentKeyDown(e) {
+    if (state !== "punishment" || e.code !== "Space") return;
+    e.preventDefault();
+    dismissPunishment();
   }
 
   function onSubmit() {
@@ -228,6 +236,7 @@ const Task1 = (() => {
         onSubmit();
       }
     });
+    document.addEventListener("keydown", onPunishmentKeyDown);
   }
 
   function init() {
@@ -236,6 +245,7 @@ const Task1 = (() => {
       barEl: els.sessionBar,
       labelEl: els.sessionLabel,
       onEnd: endSession,
+      duration: SESSION_TIME,
     });
     bindEvents();
     resetDisplay();
