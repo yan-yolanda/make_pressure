@@ -15,7 +15,7 @@ const SessionTimer = (() => {
     let timerId = null;
     let rafId = null;
     let startAt = 0;
-    const sessionTime = duration;
+    let sessionTime = duration;
 
     function clear() {
       if (timerId !== null) {
@@ -58,7 +58,12 @@ const SessionTimer = (() => {
       timerId = setTimeout(onEnd, sessionTime);
     }
 
-    return { start, clear, resetUI };
+    function setDuration(newDuration) {
+      sessionTime = newDuration;
+      resetUI();
+    }
+
+    return { start, clear, resetUI, setDuration };
   }
 
   return { create, DEFAULT_SESSION_TIME, formatTime };

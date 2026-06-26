@@ -4,7 +4,7 @@
 const Task1 = (() => {
   const ANSWER_TIME = 5000;
   const PUNISH_TIME = 5000;
-  const SESSION_TIME = 300000;
+  const DEFAULT_SESSION_MINUTES = 5;
   const SUBTRACT = 13;
 
   let currentNumber = 0;
@@ -245,9 +245,15 @@ const Task1 = (() => {
       barEl: els.sessionBar,
       labelEl: els.sessionLabel,
       onEnd: endSession,
-      duration: SESSION_TIME,
+      duration: DEFAULT_SESSION_MINUTES * 60000,
     });
     bindEvents();
+    DurationSetting.bind({
+      inputEl: document.getElementById("t1-duration"),
+      applyBtnEl: document.getElementById("t1-duration-apply"),
+      getCanApply: () => state === "idle",
+      onApply: (minutes) => session.setDuration(minutes * 60000),
+    });
     resetDisplay();
     session.resetUI();
     showStartPanel(true);

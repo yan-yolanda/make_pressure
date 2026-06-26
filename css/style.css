@@ -540,6 +540,69 @@ body {
   display: none;
 }
 
+.start-panel-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.duration-setting {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--surface);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+}
+
+.duration-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.duration-input {
+  width: 56px;
+  padding: 8px 10px;
+  font-size: 1rem;
+  font-family: var(--font-mono);
+  text-align: center;
+  background: var(--surface-2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: var(--text);
+  outline: none;
+}
+
+.duration-input:focus {
+  border-color: var(--accent-2);
+}
+
+.duration-unit {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.duration-btn {
+  padding: 8px 14px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.duration-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
 .start-btn {
   padding: 16px 48px;
   font-size: 1.15rem;
@@ -561,43 +624,6 @@ body {
 
 .start-btn:active {
   transform: translateY(0);
-}
-
-/* Start panel */
-.start-panel {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(15, 20, 25, 0.72);
-  border-radius: var(--radius);
-  z-index: 5;
-}
-
-.start-panel.hidden {
-  display: none;
-}
-
-.start-btn {
-  padding: 16px 48px;
-  font-size: 1.125rem;
-  font-weight: 600;
-  background: var(--accent);
-  color: #fff;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  box-shadow: 0 8px 24px rgba(255, 107, 74, 0.35);
-  transition: opacity 0.2s, transform 0.1s;
-}
-
-.start-btn:hover {
-  opacity: 0.92;
-}
-
-.start-btn:active {
-  transform: scale(0.97);
 }
 
 /* Overlay */

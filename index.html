@@ -71,7 +71,15 @@
       </div>
 
       <div class="start-panel" id="t1-start-panel">
-        <button type="button" class="start-btn" id="t1-start">开始任务</button>
+        <div class="start-panel-inner">
+          <button type="button" class="start-btn" id="t1-start">开始任务</button>
+          <div class="duration-setting">
+            <label class="duration-label" for="t1-duration">任务时长</label>
+            <input type="number" id="t1-duration" class="duration-input" min="1" max="99" value="5" />
+            <span class="duration-unit">分钟</span>
+            <button type="button" class="duration-btn" id="t1-duration-apply">设置时长</button>
+          </div>
+        </div>
       </div>
 
       <div class="overlay hidden" id="t1-overlay" aria-hidden="true">
@@ -127,7 +135,15 @@
       </div>
 
       <div class="start-panel" id="t2-start-panel">
-        <button type="button" class="start-btn" id="t2-start">开始任务</button>
+        <div class="start-panel-inner">
+          <button type="button" class="start-btn" id="t2-start">开始任务</button>
+          <div class="duration-setting">
+            <label class="duration-label" for="t2-duration">任务时长</label>
+            <input type="number" id="t2-duration" class="duration-input" min="1" max="99" value="2" />
+            <span class="duration-unit">分钟</span>
+            <button type="button" class="duration-btn" id="t2-duration-apply">设置时长</button>
+          </div>
+        </div>
       </div>
 
       <div class="overlay hidden" id="t2-overlay" aria-hidden="true">
@@ -167,7 +183,15 @@
       </div>
 
       <div class="start-panel" id="t3-start-panel">
-        <button type="button" class="start-btn" id="t3-start">开始任务</button>
+        <div class="start-panel-inner">
+          <button type="button" class="start-btn" id="t3-start">开始任务</button>
+          <div class="duration-setting">
+            <label class="duration-label" for="t3-duration">任务时长</label>
+            <input type="number" id="t3-duration" class="duration-input" min="1" max="99" value="2" />
+            <span class="duration-unit">分钟</span>
+            <button type="button" class="duration-btn" id="t3-duration-apply">设置时长</button>
+          </div>
+        </div>
       </div>
 
       <div class="overlay hidden" id="t3-overlay" aria-hidden="true">
@@ -232,6 +256,7 @@
 
   <script src="js/sounds.js"></script>
   <script src="js/session.js"></script>
+  <script src="js/duration-settings.js"></script>
   <script src="js/questionnaire.js"></script>
   <script src="js/task1.js"></script>
   <script src="js/task2.js"></script>

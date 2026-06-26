@@ -1,10 +1,11 @@
 /**
- * Task 3: Expression Imitation (2-minute session)
+ * Task 3: Expression Imitation (configurable session)
  */
 const Task3 = (() => {
-  const SESSION_TIME = 120000;
+  const DEFAULT_SESSION_MINUTES = 2;
 
   let state = "idle"; // idle | playing | done
+  let sessionTime = DEFAULT_SESSION_MINUTES * 60000;
   let sessionTimer = null;
   let doneTimer = null;
   let rafId = null;
@@ -50,8 +51,8 @@ const Task3 = (() => {
   }
 
   function updateTimerUI(elapsed) {
-    const remaining = Math.max(0, SESSION_TIME - elapsed);
-    const ratio = remaining / SESSION_TIME;
+    const remaining = Math.max(0, sessionTime - elapsed);
+    const ratio = remaining / sessionTime;
     els.timerBar.style.transform = `scaleX(${ratio})`;
     els.timerLabel.textContent = formatTime(remaining);
     els.timerBar.classList.toggle("urgent", ratio < 0.1);
@@ -59,14 +60,19 @@ const Task3 = (() => {
 
   function resetTimerUI() {
     els.timerBar.style.transform = "scaleX(1)";
-    els.timerLabel.textContent = formatTime(SESSION_TIME);
+    els.timerLabel.textContent = formatTime(sessionTime);
     els.timerBar.classList.remove("urgent");
+  }
+
+  function setSessionDuration(minutes) {
+    sessionTime = minutes * 60000;
+    resetTimerUI();
   }
 
   function tickTimer() {
     const elapsed = performance.now() - timerStart;
     updateTimerUI(elapsed);
-    if (elapsed < SESSION_TIME) {
+    if (elapsed < sessionTime) {
       rafId = requestAnimationFrame(tickTimer);
     }
   }
@@ -76,7 +82,7 @@ const Task3 = (() => {
     timerStart = performance.now();
     updateTimerUI(0);
     rafId = requestAnimationFrame(tickTimer);
-    sessionTimer = setTimeout(onSessionEnd, SESSION_TIME);
+    sessionTimer = setTimeout(onSessionEnd, sessionTime);
   }
 
   function showStartPanel(show) {
@@ -92,7 +98,7 @@ const Task3 = (() => {
     if (state !== "playing") return;
     state = "done";
     clearSessionTimer();
-    updateTimerUI(SESSION_TIME);
+    updateTimerUI(sessionTime);
     els.timerLabel.textContent = "0:00";
     showOverlay(true);
 
@@ -123,6 +129,12 @@ const Task3 = (() => {
   function init() {
     cacheElements();
     bindEvents();
+    DurationSetting.bind({
+      inputEl: document.getElementById("t3-duration"),
+      applyBtnEl: document.getElementById("t3-duration-apply"),
+      getCanApply: () => state === "idle",
+      onApply: setSessionDuration,
+    });
     resetTimerUI();
     showStartPanel(true);
     showOverlay(false);

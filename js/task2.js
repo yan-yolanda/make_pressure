@@ -6,6 +6,7 @@ const Task2 = (() => {
   const ROUND_TIME = 3000;
   const PUNISH_TIME = 5000;
   const TWO_BACK_PROB = 0.3;
+  const DEFAULT_SESSION_MINUTES = 2;
   const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
   let state = "idle"; // idle | playing | punishment | finished
@@ -314,8 +315,15 @@ const Task2 = (() => {
       barEl: els.sessionBar,
       labelEl: els.sessionLabel,
       onEnd: endSession,
+      duration: DEFAULT_SESSION_MINUTES * 60000,
     });
     bindEvents();
+    DurationSetting.bind({
+      inputEl: document.getElementById("t2-duration"),
+      applyBtnEl: document.getElementById("t2-duration-apply"),
+      getCanApply: () => state === "idle",
+      onApply: (minutes) => session.setDuration(minutes * 60000),
+    });
     resetDisplay();
     session.resetUI();
     showStartPanel(true);
