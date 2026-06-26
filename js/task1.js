@@ -212,8 +212,18 @@ const Task1 = (() => {
     state = "idle";
     showSummary(false);
     resetDisplay();
-    session.resetUI();
+    syncDurationPreview();
     showStartPanel(true);
+  }
+
+  function syncDurationPreview() {
+    const minutes = DurationSetting.readMinutes(
+      els.durationInput,
+      DEFAULT_SESSION_MINUTES
+    );
+    if (minutes !== null && session) {
+      session.setDuration(DurationSetting.toMs(minutes));
+    }
   }
 
   function play() {
@@ -228,12 +238,11 @@ const Task1 = (() => {
       return;
     }
 
-    session.setDuration(minutes * 60000);
     Sfx.warmUp();
     resetStats();
     showSummary(false);
     showStartPanel(false);
-    session.start();
+    session.start(DurationSetting.toMs(minutes));
     beginRound();
   }
 
@@ -241,6 +250,9 @@ const Task1 = (() => {
     els.startBtn.addEventListener("click", play);
     els.confirm.addEventListener("click", onSubmit);
     els.summaryBtn.addEventListener("click", dismissSummary);
+    els.durationInput.addEventListener("input", () => {
+      if (state === "idle") syncDurationPreview();
+    });
     els.input.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
         e.preventDefault();
@@ -258,6 +270,7 @@ const Task1 = (() => {
       duration: DEFAULT_SESSION_MINUTES * 60000,
     });
     bindEvents();
+    syncDurationPreview();
     resetDisplay();
     session.resetUI();
     showStartPanel(true);
@@ -268,7 +281,7 @@ const Task1 = (() => {
     if (session) session.clear();
     state = "idle";
     resetDisplay();
-    if (session) session.resetUI();
+    syncDurationPreview();
     showStartPanel(true);
   }
 

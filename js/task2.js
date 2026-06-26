@@ -289,8 +289,18 @@ const Task2 = (() => {
     state = "idle";
     showSummary(false);
     resetDisplay();
-    session.resetUI();
+    syncDurationPreview();
     showStartPanel(true);
+  }
+
+  function syncDurationPreview() {
+    const minutes = DurationSetting.readMinutes(
+      els.durationInput,
+      DEFAULT_SESSION_MINUTES
+    );
+    if (minutes !== null && session) {
+      session.setDuration(DurationSetting.toMs(minutes));
+    }
   }
 
   function play() {
@@ -305,18 +315,20 @@ const Task2 = (() => {
       return;
     }
 
-    session.setDuration(minutes * 60000);
     Sfx.warmUp();
     resetStats();
     showSummary(false);
     showStartPanel(false);
-    session.start();
+    session.start(DurationSetting.toMs(minutes));
     resetSequence();
   }
 
   function bindEvents() {
     els.startBtn.addEventListener("click", play);
     els.summaryBtn.addEventListener("click", dismissSummary);
+    els.durationInput.addEventListener("input", () => {
+      if (state === "idle") syncDurationPreview();
+    });
     document.addEventListener("keydown", onKeyDown);
   }
 
@@ -328,8 +340,8 @@ const Task2 = (() => {
       duration: DEFAULT_SESSION_MINUTES * 60000,
     });
     bindEvents();
+    syncDurationPreview();
     resetDisplay();
-    session.resetUI();
     showStartPanel(true);
   }
 
@@ -338,7 +350,7 @@ const Task2 = (() => {
     if (session) session.clear();
     state = "idle";
     resetDisplay();
-    if (session) session.resetUI();
+    syncDurationPreview();
     showStartPanel(true);
   }
 

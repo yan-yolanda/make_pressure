@@ -48,17 +48,21 @@ const SessionTimer = (() => {
       }
     }
 
-    function start() {
+    function setDuration(newDuration) {
+      sessionTime = newDuration;
+      resetUI();
+    }
+
+    function start(durationMs) {
+      if (typeof durationMs === "number" && durationMs > 0) {
+        sessionTime = durationMs;
+      }
       clear();
+      resetUI();
       startAt = performance.now();
       updateUI(0);
       rafId = requestAnimationFrame(tick);
       timerId = setTimeout(onEnd, sessionTime);
-    }
-
-    function setDuration(newDuration) {
-      sessionTime = newDuration;
-      resetUI();
     }
 
     return { start, clear, resetUI, setDuration };

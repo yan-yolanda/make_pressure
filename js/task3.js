@@ -60,8 +60,18 @@ const Task3 = (() => {
   }
 
   function setSessionDuration(minutes) {
-    sessionTime = minutes * 60000;
+    sessionTime = DurationSetting.toMs(minutes);
     resetTimerUI();
+  }
+
+  function syncDurationPreview() {
+    const minutes = DurationSetting.readMinutes(
+      els.durationInput,
+      DEFAULT_SESSION_MINUTES
+    );
+    if (minutes !== null) {
+      setSessionDuration(minutes);
+    }
   }
 
   function tickTimer() {
@@ -72,8 +82,12 @@ const Task3 = (() => {
     }
   }
 
-  function startSessionTimer() {
+  function startSessionTimer(durationMs) {
+    if (typeof durationMs === "number" && durationMs > 0) {
+      sessionTime = durationMs;
+    }
     clearSessionTimer();
+    resetTimerUI();
     timerStart = performance.now();
     updateTimerUI(0);
     rafId = requestAnimationFrame(tickTimer);
@@ -102,7 +116,7 @@ const Task3 = (() => {
       showOverlay(false);
       Questionnaire.show("t1", () => {
         state = "idle";
-        resetTimerUI();
+        syncDurationPreview();
         showStartPanel(true);
       });
     }, 2000);
@@ -120,21 +134,23 @@ const Task3 = (() => {
       return;
     }
 
-    setSessionDuration(minutes);
     state = "playing";
     showStartPanel(false);
     showOverlay(false);
-    startSessionTimer();
+    startSessionTimer(DurationSetting.toMs(minutes));
   }
 
   function bindEvents() {
     els.startBtn.addEventListener("click", play);
+    els.durationInput.addEventListener("input", () => {
+      if (state === "idle") syncDurationPreview();
+    });
   }
 
   function init() {
     cacheElements();
     bindEvents();
-    resetTimerUI();
+    syncDurationPreview();
     showStartPanel(true);
     showOverlay(false);
   }
@@ -143,7 +159,7 @@ const Task3 = (() => {
     clearSessionTimer();
     clearDoneTimer();
     state = "idle";
-    resetTimerUI();
+    syncDurationPreview();
     showOverlay(false);
     showStartPanel(true);
   }
