@@ -27,13 +27,13 @@ const Task1 = (() => {
     els.number = $("t1-number");
     els.timerBar = $("t1-timer-bar");
     els.timerLabel = $("t1-timer-label");
-    els.sessionBar = $("t1-session-bar");
     els.sessionLabel = $("t1-session-label");
     els.input = $("t1-input");
     els.confirm = $("t1-confirm");
     els.overlay = $("t1-overlay");
     els.startPanel = $("t1-start-panel");
     els.startBtn = $("t1-start");
+    els.durationInput = $("t1-duration");
     els.correct = $("t1-correct");
     els.wrong = $("t1-wrong");
     els.summary = $("t1-summary");
@@ -218,6 +218,17 @@ const Task1 = (() => {
 
   function play() {
     if (state !== "idle") return;
+
+    const minutes = DurationSetting.readMinutes(
+      els.durationInput,
+      DEFAULT_SESSION_MINUTES
+    );
+    if (minutes === null) {
+      els.durationInput.focus();
+      return;
+    }
+
+    session.setDuration(minutes * 60000);
     Sfx.warmUp();
     resetStats();
     showSummary(false);
@@ -242,18 +253,11 @@ const Task1 = (() => {
   function init() {
     cacheElements();
     session = SessionTimer.create({
-      barEl: els.sessionBar,
       labelEl: els.sessionLabel,
       onEnd: endSession,
       duration: DEFAULT_SESSION_MINUTES * 60000,
     });
     bindEvents();
-    DurationSetting.bind({
-      inputEl: document.getElementById("t1-duration"),
-      applyBtnEl: document.getElementById("t1-duration-apply"),
-      getCanApply: () => state === "idle",
-      onApply: (minutes) => session.setDuration(minutes * 60000),
-    });
     resetDisplay();
     session.resetUI();
     showStartPanel(true);

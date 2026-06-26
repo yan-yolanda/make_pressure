@@ -18,18 +18,15 @@ const Task3 = (() => {
   }
 
   function cacheElements() {
-    els.timerBar = $("t3-timer-bar");
     els.timerLabel = $("t3-timer-label");
     els.startPanel = $("t3-start-panel");
     els.startBtn = $("t3-start");
+    els.durationInput = $("t3-duration");
     els.overlay = $("t3-overlay");
   }
 
   function formatTime(ms) {
-    const totalSec = Math.ceil(ms / 1000);
-    const min = Math.floor(totalSec / 60);
-    const sec = totalSec % 60;
-    return `${min}:${sec.toString().padStart(2, "0")}`;
+    return SessionTimer.formatTime(ms);
   }
 
   function clearSessionTimer() {
@@ -53,15 +50,13 @@ const Task3 = (() => {
   function updateTimerUI(elapsed) {
     const remaining = Math.max(0, sessionTime - elapsed);
     const ratio = remaining / sessionTime;
-    els.timerBar.style.transform = `scaleX(${ratio})`;
     els.timerLabel.textContent = formatTime(remaining);
-    els.timerBar.classList.toggle("urgent", ratio < 0.1);
+    els.timerLabel.classList.toggle("urgent", ratio < 0.1);
   }
 
   function resetTimerUI() {
-    els.timerBar.style.transform = "scaleX(1)";
     els.timerLabel.textContent = formatTime(sessionTime);
-    els.timerBar.classList.remove("urgent");
+    els.timerLabel.classList.remove("urgent");
   }
 
   function setSessionDuration(minutes) {
@@ -98,7 +93,6 @@ const Task3 = (() => {
     if (state !== "playing") return;
     state = "done";
     clearSessionTimer();
-    updateTimerUI(sessionTime);
     els.timerLabel.textContent = "0:00";
     showOverlay(true);
 
@@ -116,6 +110,17 @@ const Task3 = (() => {
 
   function play() {
     if (state !== "idle") return;
+
+    const minutes = DurationSetting.readMinutes(
+      els.durationInput,
+      DEFAULT_SESSION_MINUTES
+    );
+    if (minutes === null) {
+      els.durationInput.focus();
+      return;
+    }
+
+    setSessionDuration(minutes);
     state = "playing";
     showStartPanel(false);
     showOverlay(false);
@@ -129,12 +134,6 @@ const Task3 = (() => {
   function init() {
     cacheElements();
     bindEvents();
-    DurationSetting.bind({
-      inputEl: document.getElementById("t3-duration"),
-      applyBtnEl: document.getElementById("t3-duration-apply"),
-      getCanApply: () => state === "idle",
-      onApply: setSessionDuration,
-    });
     resetTimerUI();
     showStartPanel(true);
     showOverlay(false);

@@ -38,11 +38,11 @@ const Task2 = (() => {
     els.digit = $("t2-digit");
     els.timerBar = $("t2-timer-bar");
     els.timerLabel = $("t2-timer-label");
-    els.sessionBar = $("t2-session-bar");
     els.sessionLabel = $("t2-session-label");
     els.overlay = $("t2-overlay");
     els.startPanel = $("t2-start-panel");
     els.startBtn = $("t2-start");
+    els.durationInput = $("t2-duration");
     els.correct = $("t2-correct");
     els.wrong = $("t2-wrong");
     els.summary = $("t2-summary");
@@ -295,6 +295,17 @@ const Task2 = (() => {
 
   function play() {
     if (state !== "idle") return;
+
+    const minutes = DurationSetting.readMinutes(
+      els.durationInput,
+      DEFAULT_SESSION_MINUTES
+    );
+    if (minutes === null) {
+      els.durationInput.focus();
+      return;
+    }
+
+    session.setDuration(minutes * 60000);
     Sfx.warmUp();
     resetStats();
     showSummary(false);
@@ -312,18 +323,11 @@ const Task2 = (() => {
   function init() {
     cacheElements();
     session = SessionTimer.create({
-      barEl: els.sessionBar,
       labelEl: els.sessionLabel,
       onEnd: endSession,
       duration: DEFAULT_SESSION_MINUTES * 60000,
     });
     bindEvents();
-    DurationSetting.bind({
-      inputEl: document.getElementById("t2-duration"),
-      applyBtnEl: document.getElementById("t2-duration-apply"),
-      getCanApply: () => state === "idle",
-      onApply: (minutes) => session.setDuration(minutes * 60000),
-    });
     resetDisplay();
     session.resetUI();
     showStartPanel(true);

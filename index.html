@@ -36,12 +36,9 @@
       </div>
 
       <div class="task1-body">
-        <div class="session-row">
-          <span class="session-label">任务剩余</span>
-          <div class="session-bar-wrap">
-            <div class="session-bar" id="t1-session-bar"></div>
-          </div>
-          <span class="session-time" id="t1-session-label">5:00</span>
+        <div class="session-countdown">
+          <span class="session-countdown-label">任务剩余</span>
+          <span class="session-countdown-value" id="t1-session-label">5:00</span>
         </div>
 
         <div class="number-display" id="t1-number">----</div>
@@ -72,13 +69,12 @@
 
       <div class="start-panel" id="t1-start-panel">
         <div class="start-panel-inner">
-          <button type="button" class="start-btn" id="t1-start">开始任务</button>
           <div class="duration-setting">
             <label class="duration-label" for="t1-duration">任务时长</label>
             <input type="number" id="t1-duration" class="duration-input" min="1" max="99" value="5" />
             <span class="duration-unit">分钟</span>
-            <button type="button" class="duration-btn" id="t1-duration-apply">设置时长</button>
           </div>
+          <button type="button" class="start-btn" id="t1-start">开始任务</button>
         </div>
       </div>
 
@@ -104,12 +100,9 @@
       </div>
 
       <div class="task2-body">
-        <div class="session-row">
-          <span class="session-label">任务剩余</span>
-          <div class="session-bar-wrap">
-            <div class="session-bar session-bar--blue" id="t2-session-bar"></div>
-          </div>
-          <span class="session-time" id="t2-session-label">2:00</span>
+        <div class="session-countdown session-countdown--blue">
+          <span class="session-countdown-label">任务剩余</span>
+          <span class="session-countdown-value" id="t2-session-label">2:00</span>
         </div>
 
         <div class="dual-cards">
@@ -136,13 +129,12 @@
 
       <div class="start-panel" id="t2-start-panel">
         <div class="start-panel-inner">
-          <button type="button" class="start-btn" id="t2-start">开始任务</button>
           <div class="duration-setting">
             <label class="duration-label" for="t2-duration">任务时长</label>
             <input type="number" id="t2-duration" class="duration-input" min="1" max="99" value="2" />
             <span class="duration-unit">分钟</span>
-            <button type="button" class="duration-btn" id="t2-duration-apply">设置时长</button>
           </div>
+          <button type="button" class="start-btn" id="t2-start">开始任务</button>
         </div>
       </div>
 
@@ -176,21 +168,20 @@
           <img src="angry.jpg" alt="愤怒表情参考图" class="task3-image" />
         </div>
 
-        <div class="timer-bar-wrap">
-          <div class="timer-bar timer-bar--amber" id="t3-timer-bar"></div>
+        <div class="session-countdown session-countdown--amber">
+          <span class="session-countdown-label">任务剩余</span>
+          <span class="session-countdown-value" id="t3-timer-label">2:00</span>
         </div>
-        <div class="timer-label" id="t3-timer-label">2:00</div>
       </div>
 
       <div class="start-panel" id="t3-start-panel">
         <div class="start-panel-inner">
-          <button type="button" class="start-btn" id="t3-start">开始任务</button>
           <div class="duration-setting">
             <label class="duration-label" for="t3-duration">任务时长</label>
             <input type="number" id="t3-duration" class="duration-input" min="1" max="99" value="2" />
             <span class="duration-unit">分钟</span>
-            <button type="button" class="duration-btn" id="t3-duration-apply">设置时长</button>
           </div>
+          <button type="button" class="start-btn" id="t3-start">开始任务</button>
         </div>
       </div>
 

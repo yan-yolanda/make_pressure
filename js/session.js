@@ -5,13 +5,13 @@ const SessionTimer = (() => {
   const DEFAULT_SESSION_TIME = 120000;
 
   function formatTime(ms) {
-    const totalSec = Math.ceil(ms / 1000);
+    const totalSec = Math.max(0, Math.floor(ms / 1000));
     const min = Math.floor(totalSec / 60);
     const sec = totalSec % 60;
     return `${min}:${sec.toString().padStart(2, "0")}`;
   }
 
-  function create({ barEl, labelEl, onEnd, duration = DEFAULT_SESSION_TIME }) {
+  function create({ labelEl, onEnd, duration = DEFAULT_SESSION_TIME }) {
     let timerId = null;
     let rafId = null;
     let startAt = 0;
@@ -31,15 +31,13 @@ const SessionTimer = (() => {
     function updateUI(elapsed) {
       const remaining = Math.max(0, sessionTime - elapsed);
       const ratio = remaining / sessionTime;
-      barEl.style.transform = `scaleX(${ratio})`;
       labelEl.textContent = formatTime(remaining);
-      barEl.classList.toggle("urgent", ratio < 0.1);
+      labelEl.classList.toggle("urgent", ratio < 0.1);
     }
 
     function resetUI() {
-      barEl.style.transform = "scaleX(1)";
       labelEl.textContent = formatTime(sessionTime);
-      barEl.classList.remove("urgent");
+      labelEl.classList.remove("urgent");
     }
 
     function tick() {
