@@ -69,6 +69,31 @@
 
       <div class="start-panel" id="t1-start-panel">
         <div class="start-panel-inner">
+          <div class="mode-setting">
+            <span class="mode-setting-label">出题模式</span>
+            <div class="mode-options">
+              <label class="mode-option">
+                <input type="radio" name="t1-mode" id="t1-mode-random" value="random" checked />
+                <span>随机四位数</span>
+              </label>
+              <label class="mode-option">
+                <input type="radio" name="t1-mode" id="t1-mode-fixed" value="fixed" />
+                <span>固定四位数</span>
+              </label>
+            </div>
+            <div class="fixed-start-setting" id="t1-fixed-setting">
+              <label class="duration-label" for="t1-fixed-start">起始数字</label>
+              <input
+                type="number"
+                id="t1-fixed-start"
+                class="duration-input duration-input--wide"
+                min="1000"
+                max="9999"
+                value="1022"
+                disabled
+              />
+            </div>
+          </div>
           <div class="duration-setting">
             <label class="duration-label" for="t1-duration">任务时长</label>
             <input type="number" id="t1-duration" class="duration-input" min="1" max="99" value="5" />
@@ -212,11 +237,12 @@
         <section class="help-section">
           <h3>任务 1 · 心算减法</h3>
           <ul>
-            <li>点击「开始任务」后，任务持续 <strong>5 分钟</strong>。</li>
-            <li>系统随机生成一个四位数，你需要计算当前数字减去 <strong>13</strong> 的结果。</li>
+            <li>点击「开始任务」后，任务持续设定时长（默认 <strong>5 分钟</strong>）。</li>
+            <li>支持两种出题模式：<strong>随机四位数</strong>（每次出错后重新随机）或 <strong>固定四位数</strong>（默认从 1022 开始，出错后回到该起始数字）。</li>
+            <li>你需要计算当前数字减去 <strong>13</strong> 的结果。</li>
             <li>在 <strong>5 秒</strong>内输入答案并回车（或点击确认）。</li>
             <li>答对：数字更新为正确答案，重置 5 秒倒计时，继续下一题。</li>
-            <li>答错或超时：显示红叉并暂停 5 秒，可按 <kbd>空格</kbd> 提前关闭，随后重新开始新的四位数。</li>
+            <li>答错或超时：显示红叉并暂停 5 秒，可按 <kbd>空格</kbd> 提前关闭，随后按所选模式重新开始。</li>
             <li>5 分钟结束后弹窗显示正确与错误次数。</li>
           </ul>
         </section>

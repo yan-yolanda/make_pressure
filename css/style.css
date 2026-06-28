@@ -570,9 +570,60 @@ body {
   border-color: var(--accent-2);
 }
 
+.duration-input--wide {
+  width: 72px;
+}
+
 .duration-unit {
   font-size: 0.85rem;
   color: var(--text-muted);
+}
+
+.mode-setting {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  padding: 12px 16px;
+  background: var(--surface);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  min-width: 260px;
+}
+
+.mode-setting-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.mode-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+}
+
+.mode-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.mode-option input {
+  accent-color: var(--accent);
+}
+
+.fixed-start-setting {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.fixed-start-setting.is-disabled {
+  opacity: 0.45;
 }
 
 .start-btn {

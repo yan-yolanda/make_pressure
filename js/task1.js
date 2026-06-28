@@ -5,6 +5,7 @@ const Task1 = (() => {
   const ANSWER_TIME = 5000;
   const PUNISH_TIME = 5000;
   const DEFAULT_SESSION_MINUTES = 5;
+  const DEFAULT_FIXED_START = 1022;
   const SUBTRACT = 13;
 
   let currentNumber = 0;
@@ -16,6 +17,8 @@ const Task1 = (() => {
   let correctCount = 0;
   let wrongCount = 0;
   let session = null;
+  let numberMode = "random"; // random | fixed
+  let fixedStartNumber = DEFAULT_FIXED_START;
 
   const els = {};
 
@@ -34,6 +37,10 @@ const Task1 = (() => {
     els.startPanel = $("t1-start-panel");
     els.startBtn = $("t1-start");
     els.durationInput = $("t1-duration");
+    els.modeRandom = $("t1-mode-random");
+    els.modeFixed = $("t1-mode-fixed");
+    els.fixedSetting = $("t1-fixed-setting");
+    els.fixedStartInput = $("t1-fixed-start");
     els.correct = $("t1-correct");
     els.wrong = $("t1-wrong");
     els.summary = $("t1-summary");
@@ -44,6 +51,29 @@ const Task1 = (() => {
 
   function randomFourDigit() {
     return Math.floor(Math.random() * 9000) + 1000;
+  }
+
+  function readNumberMode() {
+    return els.modeFixed.checked ? "fixed" : "random";
+  }
+
+  function readFixedStartNumber() {
+    const raw = String(els.fixedStartInput.value).trim();
+    if (raw === "") return DEFAULT_FIXED_START;
+
+    const number = parseInt(raw, 10);
+    if (!Number.isFinite(number) || number < 1000 || number > 9999) return null;
+    return number;
+  }
+
+  function updateModeUI() {
+    const isFixed = readNumberMode() === "fixed";
+    els.fixedStartInput.disabled = !isFixed;
+    els.fixedSetting.classList.toggle("is-disabled", !isFixed);
+  }
+
+  function nextStartNumber() {
+    return numberMode === "fixed" ? fixedStartNumber : randomFourDigit();
   }
 
   function clearAnswerTimer() {
@@ -140,7 +170,7 @@ const Task1 = (() => {
   function beginRound() {
     if (state === "finished") return;
     state = "playing";
-    currentNumber = randomFourDigit();
+    currentNumber = nextStartNumber();
     els.number.textContent = currentNumber;
     els.input.value = "";
     setInputEnabled(true);
@@ -238,6 +268,16 @@ const Task1 = (() => {
       return;
     }
 
+    numberMode = readNumberMode();
+    if (numberMode === "fixed") {
+      const fixedStart = readFixedStartNumber();
+      if (fixedStart === null) {
+        els.fixedStartInput.focus();
+        return;
+      }
+      fixedStartNumber = fixedStart;
+    }
+
     Sfx.warmUp();
     resetStats();
     showSummary(false);
@@ -250,6 +290,8 @@ const Task1 = (() => {
     els.startBtn.addEventListener("click", play);
     els.confirm.addEventListener("click", onSubmit);
     els.summaryBtn.addEventListener("click", dismissSummary);
+    els.modeRandom.addEventListener("change", updateModeUI);
+    els.modeFixed.addEventListener("change", updateModeUI);
     els.durationInput.addEventListener("input", () => {
       if (state === "idle") syncDurationPreview();
     });
@@ -270,6 +312,7 @@ const Task1 = (() => {
       duration: DEFAULT_SESSION_MINUTES * 60000,
     });
     bindEvents();
+    updateModeUI();
     syncDurationPreview();
     resetDisplay();
     session.resetUI();
