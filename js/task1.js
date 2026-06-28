@@ -85,6 +85,7 @@ const Task1 = (() => {
       cancelAnimationFrame(rafId);
       rafId = null;
     }
+    Sfx.stopAnswerCountdown();
   }
 
   function clearPunishTimer() {
@@ -125,6 +126,7 @@ const Task1 = (() => {
     clearAnswerTimer();
     timerStart = performance.now();
     updateTimerUI(0);
+    Sfx.startAnswerCountdown(ANSWER_TIME);
     rafId = requestAnimationFrame(tickTimer);
     answerTimer = setTimeout(() => onFail("timeout"), ANSWER_TIME);
   }
