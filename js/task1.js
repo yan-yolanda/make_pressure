@@ -2,7 +2,8 @@
  * Task 1: Mental Arithmetic (subtract 13)
  */
 const Task1 = (() => {
-  const ANSWER_TIME = 3000;
+  const ANSWER_TIME = 5000;
+  const ANSWER_SOUND_TIME = 3000;
   const PUNISH_TIME = 5000;
   const DEFAULT_SESSION_MINUTES = 5;
   const DEFAULT_FIXED_START = 1022;
@@ -178,7 +179,7 @@ const Task1 = (() => {
     clearAnswerTimer();
     timerStart = performance.now();
     updateTimerUI(0);
-    Sfx.startAnswerCountdown(ANSWER_TIME);
+    Sfx.startAnswerCountdown(ANSWER_TIME, ANSWER_SOUND_TIME);
     rafId = requestAnimationFrame(tickTimer);
     answerTimer = setTimeout(() => onFail("timeout"), ANSWER_TIME);
   }

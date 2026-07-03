@@ -32,7 +32,7 @@
     <section id="task1" class="task-page active" role="tabpanel">
       <div class="task-header">
         <h2>心算减法任务</h2>
-        <p class="task-desc">将当前数字减去 13，在 3 秒内输入答案并回车确认</p>
+        <p class="task-desc">将当前数字减去 13，在 5 秒内输入答案并回车确认</p>
       </div>
 
       <div class="task1-body">
@@ -55,7 +55,7 @@
         <div class="timer-bar-wrap">
           <div class="timer-bar" id="t1-timer-bar"></div>
         </div>
-        <div class="timer-label" id="t1-timer-label">3.0s</div>
+        <div class="timer-label" id="t1-timer-label">5.0s</div>
 
         <div class="input-row">
           <input
@@ -139,7 +139,7 @@
             <li>本次任务时长为 <strong id="t1-briefing-duration">5</strong> 分钟。</li>
             <li>出题模式：<strong id="t1-briefing-mode">随机四位数</strong>。</li>
             <li>游戏目标：连续答对 <strong id="t1-briefing-goal">15</strong> 次；达成后目标自动 +5。</li>
-            <li>计算当前数字减去 <strong>13</strong> 的结果，在 <strong>3 秒</strong>内输入并回车（或点击确认）。</li>
+            <li>计算当前数字减去 <strong>13</strong> 的结果，在 <strong>5 秒</strong>内输入并回车（或点击确认）；最后 <strong>3 秒</strong>会播放倒计时音效。</li>
             <li>答对：数字更新为正确答案，继续下一题。</li>
             <li>答错或超时：显示红叉并暂停 5 秒，可按 <kbd>空格</kbd> 提前关闭，随后按所选模式重新开始。</li>
             <li>界面会显示当前连对目标与本次最大连对次数。</li>
@@ -272,8 +272,8 @@
             <li>支持两种出题模式：<strong>随机四位数</strong>（每次出错后重新随机）或 <strong>固定四位数</strong>（默认从 1022 开始，出错后回到该起始数字）。</li>
             <li>游戏目标为连续答对指定次数（默认 <strong>15</strong> 次），达成后目标自动 <strong>+5</strong>；界面显示当前目标与本次最大连对次数。</li>
             <li>你需要计算当前数字减去 <strong>13</strong> 的结果。</li>
-            <li>在 <strong>3 秒</strong>内输入答案并回车（或点击确认）。</li>
-            <li>答对：数字更新为正确答案，重置 3 秒倒计时，继续下一题。</li>
+            <li>在 <strong>5 秒</strong>内输入答案并回车（或点击确认）；最后 <strong>3 秒</strong>会播放倒计时音效。</li>
+            <li>答对：数字更新为正确答案，重置 5 秒倒计时，继续下一题。</li>
             <li>答错或超时：显示红叉并暂停 5 秒，可按 <kbd>空格</kbd> 提前关闭，随后按所选模式重新开始。</li>
             <li>5 分钟结束后弹窗显示正确与错误次数。</li>
           </ul>
