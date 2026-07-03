@@ -2,10 +2,12 @@
  * Task 1: Mental Arithmetic (subtract 13)
  */
 const Task1 = (() => {
-  const ANSWER_TIME = 5000;
+  const ANSWER_TIME = 3000;
   const PUNISH_TIME = 5000;
   const DEFAULT_SESSION_MINUTES = 5;
   const DEFAULT_FIXED_START = 1022;
+  const DEFAULT_GOAL_STREAK = 15;
+  const GOAL_INCREMENT = 5;
   const SUBTRACT = 13;
 
   let currentNumber = 0;
@@ -13,9 +15,13 @@ const Task1 = (() => {
   let punishTimer = null;
   let rafId = null;
   let timerStart = 0;
-  let state = "idle"; // idle | playing | punishment | finished
+  let state = "idle"; // idle | briefing | playing | punishment | finished
   let correctCount = 0;
   let wrongCount = 0;
+  let currentStreak = 0;
+  let maxStreak = 0;
+  let goalTarget = DEFAULT_GOAL_STREAK;
+  let pendingSessionMinutes = DEFAULT_SESSION_MINUTES;
   let session = null;
   let numberMode = "random"; // random | fixed
   let fixedStartNumber = DEFAULT_FIXED_START;
@@ -41,12 +47,21 @@ const Task1 = (() => {
     els.modeFixed = $("t1-mode-fixed");
     els.fixedSetting = $("t1-fixed-setting");
     els.fixedStartInput = $("t1-fixed-start");
+    els.goalInitialInput = $("t1-goal-initial");
+    els.goalTarget = $("t1-goal-target");
+    els.maxStreak = $("t1-max-streak");
     els.correct = $("t1-correct");
     els.wrong = $("t1-wrong");
     els.summary = $("t1-summary");
     els.summaryCorrect = $("t1-summary-correct");
     els.summaryWrong = $("t1-summary-wrong");
+    els.summaryMaxStreak = $("t1-summary-max-streak");
     els.summaryBtn = $("t1-summary-btn");
+    els.briefing = $("t1-briefing");
+    els.briefingDuration = $("t1-briefing-duration");
+    els.briefingMode = $("t1-briefing-mode");
+    els.briefingGoal = $("t1-briefing-goal");
+    els.briefingBtn = $("t1-briefing-btn");
   }
 
   function randomFourDigit() {
@@ -64,6 +79,43 @@ const Task1 = (() => {
     const number = parseInt(raw, 10);
     if (!Number.isFinite(number) || number < 1000 || number > 9999) return null;
     return number;
+  }
+
+  function readInitialGoal() {
+    const raw = String(els.goalInitialInput.value).trim();
+    if (raw === "") return DEFAULT_GOAL_STREAK;
+
+    const goal = parseInt(raw, 10);
+    if (!Number.isFinite(goal) || goal < 1) return null;
+    return goal;
+  }
+
+  function updateGoalUI() {
+    els.goalTarget.textContent = goalTarget;
+    els.maxStreak.textContent = maxStreak;
+  }
+
+  function resetGoalProgress(initialGoal) {
+    goalTarget = initialGoal;
+    currentStreak = 0;
+    maxStreak = 0;
+    updateGoalUI();
+  }
+
+  function recordCorrectStreak() {
+    currentStreak++;
+    if (currentStreak > maxStreak) {
+      maxStreak = currentStreak;
+    }
+    while (currentStreak >= goalTarget) {
+      goalTarget += GOAL_INCREMENT;
+    }
+    updateGoalUI();
+  }
+
+  function resetCurrentStreak() {
+    currentStreak = 0;
+    updateGoalUI();
   }
 
   function updateModeUI() {
@@ -153,11 +205,44 @@ const Task1 = (() => {
     els.summary.setAttribute("aria-hidden", String(!show));
   }
 
+  function showBriefing(show) {
+    els.briefing.classList.toggle("hidden", !show);
+    els.briefing.setAttribute("aria-hidden", String(!show));
+  }
+
+  function updateBriefingContent(minutes, initialGoal) {
+    els.briefingDuration.textContent = minutes;
+    els.briefingGoal.textContent = initialGoal;
+    if (numberMode === "fixed") {
+      els.briefingMode.textContent = `固定四位数（起始 ${fixedStartNumber}）`;
+    } else {
+      els.briefingMode.textContent = "随机四位数";
+    }
+  }
+
+  function confirmBriefing() {
+    if (state !== "briefing") return;
+
+    showBriefing(false);
+    session.start(DurationSetting.toMs(pendingSessionMinutes));
+    beginRound();
+  }
+
   function resetStats() {
     correctCount = 0;
     wrongCount = 0;
     els.correct.textContent = "0";
     els.wrong.textContent = "0";
+  }
+
+  function resetGoalPreview() {
+    const initialGoal = readInitialGoal();
+    if (initialGoal !== null) {
+      goalTarget = initialGoal;
+      currentStreak = 0;
+      maxStreak = 0;
+      updateGoalUI();
+    }
   }
 
   function resetDisplay() {
@@ -185,6 +270,7 @@ const Task1 = (() => {
     state = "punishment";
     wrongCount++;
     els.wrong.textContent = wrongCount;
+    resetCurrentStreak();
     clearAnswerTimer();
     setInputEnabled(false);
     showOverlay(true);
@@ -218,6 +304,7 @@ const Task1 = (() => {
     if (answer === expected) {
       correctCount++;
       els.correct.textContent = correctCount;
+      recordCorrectStreak();
       currentNumber = answer;
       els.number.textContent = currentNumber;
       els.input.value = "";
@@ -237,6 +324,7 @@ const Task1 = (() => {
 
     els.summaryCorrect.textContent = correctCount;
     els.summaryWrong.textContent = wrongCount;
+    els.summaryMaxStreak.textContent = maxStreak;
     showSummary(true);
   }
 
@@ -244,6 +332,7 @@ const Task1 = (() => {
     state = "idle";
     showSummary(false);
     resetDisplay();
+    resetGoalPreview();
     syncDurationPreview();
     showStartPanel(true);
   }
@@ -280,22 +369,35 @@ const Task1 = (() => {
       fixedStartNumber = fixedStart;
     }
 
+    const initialGoal = readInitialGoal();
+    if (initialGoal === null) {
+      els.goalInitialInput.focus();
+      return;
+    }
+
     Sfx.warmUp();
     resetStats();
+    resetGoalProgress(initialGoal);
+    pendingSessionMinutes = minutes;
+    updateBriefingContent(minutes, initialGoal);
     showSummary(false);
     showStartPanel(false);
-    session.start(DurationSetting.toMs(minutes));
-    beginRound();
+    showBriefing(true);
+    state = "briefing";
   }
 
   function bindEvents() {
     els.startBtn.addEventListener("click", play);
+    els.briefingBtn.addEventListener("click", confirmBriefing);
     els.confirm.addEventListener("click", onSubmit);
     els.summaryBtn.addEventListener("click", dismissSummary);
     els.modeRandom.addEventListener("change", updateModeUI);
     els.modeFixed.addEventListener("change", updateModeUI);
     els.durationInput.addEventListener("input", () => {
       if (state === "idle") syncDurationPreview();
+    });
+    els.goalInitialInput.addEventListener("input", () => {
+      if (state === "idle") resetGoalPreview();
     });
     els.input.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
@@ -316,16 +418,20 @@ const Task1 = (() => {
     bindEvents();
     updateModeUI();
     syncDurationPreview();
+    resetGoalPreview();
     resetDisplay();
     session.resetUI();
+    showBriefing(false);
     showStartPanel(true);
   }
 
   function stop() {
     clearGameplayTimers();
     if (session) session.clear();
+    showBriefing(false);
     state = "idle";
     resetDisplay();
+    resetGoalPreview();
     syncDurationPreview();
     showStartPanel(true);
   }

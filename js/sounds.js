@@ -7,6 +7,7 @@ const Sfx = (() => {
 
   let ctx = null;
   let countdownAudio = null;
+  let countdownStopTimer = null;
 
   function getCtx() {
     if (!ctx) {
@@ -53,16 +54,21 @@ const Sfx = (() => {
   }
 
   function stopAnswerCountdown() {
+    if (countdownStopTimer !== null) {
+      clearTimeout(countdownStopTimer);
+      countdownStopTimer = null;
+    }
     if (!countdownAudio) return;
     countdownAudio.pause();
     countdownAudio.currentTime = 0;
   }
 
-  function startAnswerCountdown() {
+  function startAnswerCountdown(durationMs = 3000) {
     stopAnswerCountdown();
     const audio = getCountdownAudio();
     audio.currentTime = 0;
     audio.play().catch(() => {});
+    countdownStopTimer = setTimeout(stopAnswerCountdown, durationMs);
   }
 
   return { warmUp, playError, startAnswerCountdown, stopAnswerCountdown };

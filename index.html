@@ -32,7 +32,7 @@
     <section id="task1" class="task-page active" role="tabpanel">
       <div class="task-header">
         <h2>心算减法任务</h2>
-        <p class="task-desc">将当前数字减去 13，在 5 秒内输入答案并回车确认</p>
+        <p class="task-desc">将当前数字减去 13，在 3 秒内输入答案并回车确认</p>
       </div>
 
       <div class="task1-body">
@@ -41,12 +41,21 @@
           <span class="session-countdown-value" id="t1-session-label">5:00</span>
         </div>
 
+        <div class="goal-panel" id="t1-goal-panel">
+          <p class="goal-line">
+            目标：连续答对 <strong id="t1-goal-target">15</strong> 次
+          </p>
+          <p class="goal-line goal-line--muted">
+            现最大连对次数为 <strong id="t1-max-streak">0</strong>
+          </p>
+        </div>
+
         <div class="number-display" id="t1-number">----</div>
 
         <div class="timer-bar-wrap">
           <div class="timer-bar" id="t1-timer-bar"></div>
         </div>
-        <div class="timer-label" id="t1-timer-label">5.0s</div>
+        <div class="timer-label" id="t1-timer-label">3.0s</div>
 
         <div class="input-row">
           <input
@@ -95,6 +104,11 @@
             </div>
           </div>
           <div class="duration-setting">
+            <label class="duration-label" for="t1-goal-initial">连对目标</label>
+            <input type="number" id="t1-goal-initial" class="duration-input" min="1" max="999" value="15" />
+            <span class="duration-unit">次</span>
+          </div>
+          <div class="duration-setting">
             <label class="duration-label" for="t1-duration">任务时长</label>
             <input type="number" id="t1-duration" class="duration-input" min="1" max="99" value="5" />
             <span class="duration-unit">分钟</span>
@@ -113,7 +127,24 @@
           <h3>任务结束</h3>
           <p class="summary-stat">回答正确：<strong id="t1-summary-correct">0</strong> 次</p>
           <p class="summary-stat">回答错误：<strong id="t1-summary-wrong">0</strong> 次</p>
+          <p class="summary-stat">最大连对：<strong id="t1-summary-max-streak">0</strong> 次</p>
           <button type="button" class="confirm-btn" id="t1-summary-btn">确定</button>
+        </div>
+      </div>
+
+      <div class="briefing-overlay hidden" id="t1-briefing" role="dialog" aria-modal="true" aria-labelledby="t1-briefing-title" aria-hidden="true">
+        <div class="briefing-card">
+          <h3 id="t1-briefing-title">任务 1 · 心算减法</h3>
+          <ul class="briefing-list">
+            <li>本次任务时长为 <strong id="t1-briefing-duration">5</strong> 分钟。</li>
+            <li>出题模式：<strong id="t1-briefing-mode">随机四位数</strong>。</li>
+            <li>游戏目标：连续答对 <strong id="t1-briefing-goal">15</strong> 次；达成后目标自动 +5。</li>
+            <li>计算当前数字减去 <strong>13</strong> 的结果，在 <strong>3 秒</strong>内输入并回车（或点击确认）。</li>
+            <li>答对：数字更新为正确答案，继续下一题。</li>
+            <li>答错或超时：显示红叉并暂停 5 秒，可按 <kbd>空格</kbd> 提前关闭，随后按所选模式重新开始。</li>
+            <li>界面会显示当前连对目标与本次最大连对次数。</li>
+          </ul>
+          <button type="button" class="confirm-btn" id="t1-briefing-btn">我已知晓，正式开始游戏</button>
         </div>
       </div>
     </section>
@@ -239,9 +270,10 @@
           <ul>
             <li>点击「开始任务」后，任务持续设定时长（默认 <strong>5 分钟</strong>）。</li>
             <li>支持两种出题模式：<strong>随机四位数</strong>（每次出错后重新随机）或 <strong>固定四位数</strong>（默认从 1022 开始，出错后回到该起始数字）。</li>
+            <li>游戏目标为连续答对指定次数（默认 <strong>15</strong> 次），达成后目标自动 <strong>+5</strong>；界面显示当前目标与本次最大连对次数。</li>
             <li>你需要计算当前数字减去 <strong>13</strong> 的结果。</li>
-            <li>在 <strong>5 秒</strong>内输入答案并回车（或点击确认）。</li>
-            <li>答对：数字更新为正确答案，重置 5 秒倒计时，继续下一题。</li>
+            <li>在 <strong>3 秒</strong>内输入答案并回车（或点击确认）。</li>
+            <li>答对：数字更新为正确答案，重置 3 秒倒计时，继续下一题。</li>
             <li>答错或超时：显示红叉并暂停 5 秒，可按 <kbd>空格</kbd> 提前关闭，随后按所选模式重新开始。</li>
             <li>5 分钟结束后弹窗显示正确与错误次数。</li>
           </ul>
