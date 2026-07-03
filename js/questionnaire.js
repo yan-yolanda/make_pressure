@@ -44,16 +44,22 @@ const Questionnaire = (() => {
 
     modal.classList.remove("hidden");
     modal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("questionnaire-open");
   }
 
   function close() {
     if (!modal) return;
     modal.classList.add("hidden");
     modal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("questionnaire-open");
     if (onCloseCallback) {
       onCloseCallback();
       onCloseCallback = null;
     }
+  }
+
+  function isOpen() {
+    return Boolean(modal && !modal.classList.contains("hidden"));
   }
 
   function init() {
@@ -63,5 +69,5 @@ const Questionnaire = (() => {
     show("baseline");
   }
 
-  return { init, show, close };
+  return { init, show, close, isOpen };
 })();

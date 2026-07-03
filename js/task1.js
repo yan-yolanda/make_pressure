@@ -21,7 +21,7 @@ const Task1 = (() => {
   let wrongCount = 0;
   let currentStreak = 0;
   let maxStreak = 0;
-  let goalTarget = DEFAULT_GOAL_STREAK;
+  let goalTargetCount = DEFAULT_GOAL_STREAK;
   let pendingSessionMinutes = DEFAULT_SESSION_MINUTES;
   let session = null;
   let numberMode = "random"; // random | fixed
@@ -49,8 +49,8 @@ const Task1 = (() => {
     els.fixedSetting = $("t1-fixed-setting");
     els.fixedStartInput = $("t1-fixed-start");
     els.goalInitialInput = $("t1-goal-initial");
-    els.goalTarget = $("t1-goal-target");
-    els.maxStreak = $("t1-max-streak");
+    els.goalTargetEl = $("t1-goal-target");
+    els.maxStreakEl = $("t1-max-streak");
     els.correct = $("t1-correct");
     els.wrong = $("t1-wrong");
     els.summary = $("t1-summary");
@@ -91,12 +91,12 @@ const Task1 = (() => {
   }
 
   function updateGoalUI() {
-    els.goalTarget.textContent = goalTarget;
-    els.maxStreak.textContent = maxStreak;
+    if (els.goalTargetEl) els.goalTargetEl.textContent = goalTargetCount;
+    if (els.maxStreakEl) els.maxStreakEl.textContent = maxStreak;
   }
 
   function resetGoalProgress(initialGoal) {
-    goalTarget = initialGoal;
+    goalTargetCount = initialGoal;
     currentStreak = 0;
     maxStreak = 0;
     updateGoalUI();
@@ -107,8 +107,8 @@ const Task1 = (() => {
     if (currentStreak > maxStreak) {
       maxStreak = currentStreak;
     }
-    while (currentStreak >= goalTarget) {
-      goalTarget += GOAL_INCREMENT;
+    while (currentStreak >= goalTargetCount) {
+      goalTargetCount += GOAL_INCREMENT;
     }
     updateGoalUI();
   }
@@ -206,12 +206,14 @@ const Task1 = (() => {
   }
 
   function showBriefing(show) {
+    if (!els.briefing) return;
     els.briefing.classList.toggle("hidden", !show);
     els.briefing.setAttribute("aria-hidden", String(!show));
   }
 
   function updateBriefingContent(minutes) {
-    els.briefingDuration.textContent = minutes;
+    if (els.briefingDuration) els.briefingDuration.textContent = minutes;
+    if (!els.briefingMode) return;
     if (numberMode === "fixed") {
       els.briefingMode.textContent = `固定四位数（起始 ${fixedStartNumber}）`;
     } else {
@@ -219,12 +221,29 @@ const Task1 = (() => {
     }
   }
 
-  function confirmBriefing() {
-    if (state !== "briefing") return;
-
-    showBriefing(false);
+  function startGameplay() {
     session.start(DurationSetting.toMs(pendingSessionMinutes));
     beginRound();
+  }
+
+  function confirmBriefing() {
+    if (state !== "briefing") return;
+    showBriefing(false);
+    startGameplay();
+  }
+
+  function openBriefingOrStart() {
+    updateBriefingContent(pendingSessionMinutes);
+    showSummary(false);
+    showStartPanel(false);
+
+    if (els.briefing && els.briefingBtn) {
+      showBriefing(true);
+      state = "briefing";
+      return;
+    }
+
+    startGameplay();
   }
 
   function resetStats() {
@@ -237,7 +256,7 @@ const Task1 = (() => {
   function resetGoalPreview() {
     const initialGoal = readInitialGoal();
     if (initialGoal !== null) {
-      goalTarget = initialGoal;
+      goalTargetCount = initialGoal;
       currentStreak = 0;
       maxStreak = 0;
       updateGoalUI();
@@ -347,6 +366,17 @@ const Task1 = (() => {
   }
 
   function play() {
+    if (Questionnaire.isOpen && Questionnaire.isOpen()) {
+      document.getElementById("questionnaire-close")?.focus();
+      return;
+    }
+
+    if (state === "briefing") {
+      showBriefing(true);
+      showStartPanel(false);
+      return;
+    }
+
     if (state !== "idle") return;
 
     const minutes = DurationSetting.readMinutes(
@@ -378,16 +408,14 @@ const Task1 = (() => {
     resetStats();
     resetGoalProgress(initialGoal);
     pendingSessionMinutes = minutes;
-    updateBriefingContent(minutes);
-    showSummary(false);
-    showStartPanel(false);
-    showBriefing(true);
-    state = "briefing";
+    openBriefingOrStart();
   }
 
   function bindEvents() {
     els.startBtn.addEventListener("click", play);
-    els.briefingBtn.addEventListener("click", confirmBriefing);
+    if (els.briefingBtn) {
+      els.briefingBtn.addEventListener("click", confirmBriefing);
+    }
     els.confirm.addEventListener("click", onSubmit);
     els.summaryBtn.addEventListener("click", dismissSummary);
     els.modeRandom.addEventListener("change", updateModeUI);
@@ -420,8 +448,7 @@ const Task1 = (() => {
     resetGoalPreview();
     resetDisplay();
     session.resetUI();
-    showBriefing(false);
-    showStartPanel(true);
+    recoverStuckUI();
   }
 
   function stop() {
@@ -433,6 +460,18 @@ const Task1 = (() => {
     resetGoalPreview();
     syncDurationPreview();
     showStartPanel(true);
+  }
+
+  function recoverStuckUI() {
+    if (state === "briefing") {
+      showBriefing(true);
+      showStartPanel(false);
+      return;
+    }
+    if (state === "idle") {
+      showBriefing(false);
+      showStartPanel(true);
+    }
   }
 
   return { init, stop };

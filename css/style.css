@@ -561,6 +561,11 @@ body {
   width: 100%;
 }
 
+body.questionnaire-open .start-panel {
+  visibility: hidden;
+  pointer-events: none;
+}
+
 /* Task briefing overlay */
 .briefing-overlay {
   position: absolute;
@@ -570,7 +575,7 @@ body {
   justify-content: center;
   background: rgba(15, 20, 25, 0.92);
   border-radius: var(--radius);
-  z-index: 12;
+  z-index: 20;
   padding: 20px;
 }
 
