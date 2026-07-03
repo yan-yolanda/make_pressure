@@ -61,7 +61,6 @@ const Task1 = (() => {
     els.briefing = $("t1-briefing");
     els.briefingDuration = $("t1-briefing-duration");
     els.briefingMode = $("t1-briefing-mode");
-    els.briefingGoal = $("t1-briefing-goal");
     els.briefingBtn = $("t1-briefing-btn");
   }
 
@@ -211,9 +210,8 @@ const Task1 = (() => {
     els.briefing.setAttribute("aria-hidden", String(!show));
   }
 
-  function updateBriefingContent(minutes, initialGoal) {
+  function updateBriefingContent(minutes) {
     els.briefingDuration.textContent = minutes;
-    els.briefingGoal.textContent = initialGoal;
     if (numberMode === "fixed") {
       els.briefingMode.textContent = `固定四位数（起始 ${fixedStartNumber}）`;
     } else {
@@ -380,7 +378,7 @@ const Task1 = (() => {
     resetStats();
     resetGoalProgress(initialGoal);
     pendingSessionMinutes = minutes;
-    updateBriefingContent(minutes, initialGoal);
+    updateBriefingContent(minutes);
     showSummary(false);
     showStartPanel(false);
     showBriefing(true);

@@ -538,6 +538,24 @@ body {
   font-size: 1.25rem;
 }
 
+.summary-note {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin: 0 0 16px;
+}
+
+.summary-stat--highlight {
+  font-size: 1.05rem;
+  color: var(--text);
+  margin-bottom: 14px;
+}
+
+.summary-stat--highlight strong {
+  color: var(--accent-2);
+  font-size: 1.5rem;
+}
+
 .summary-card .confirm-btn {
   margin-top: 20px;
   width: 100%;
