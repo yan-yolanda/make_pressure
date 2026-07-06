@@ -10,10 +10,22 @@ const Task1 = (() => {
   const DEFAULT_GOAL_STREAK = 15;
   const GOAL_INCREMENT = 5;
   const SUBTRACT = 13;
+  const SOCIAL_EVAL_INTERVAL = 90000;
+  const SOCIAL_EVAL_DISPLAY = 5000;
+  const SOCIAL_EVAL_MESSAGES = [
+    "当前表现低于研究要求，请集中注意并提高速度",
+    "反应速度偏慢，请立即加快答题节奏",
+    "连续表现未达标准，请保持专注并提升准确率",
+    "监测显示注意力下降，请调整状态继续任务",
+    "当前成绩低于同组平均水平，请加紧完成",
+  ];
 
   let currentNumber = 0;
   let answerTimer = null;
   let punishTimer = null;
+  let socialEvalInterval = null;
+  let socialEvalHideTimer = null;
+  let socialEvalMessageIndex = 0;
   let rafId = null;
   let timerStart = 0;
   let state = "idle"; // idle | briefing | playing | punishment | finished
@@ -62,6 +74,9 @@ const Task1 = (() => {
     els.briefingDuration = $("t1-briefing-duration");
     els.briefingMode = $("t1-briefing-mode");
     els.briefingBtn = $("t1-briefing-btn");
+    els.cameraMonitor = $("t1-camera-monitor");
+    els.socialEval = $("t1-social-eval");
+    els.socialEvalText = $("t1-social-eval-text");
   }
 
   function randomFourDigit() {
@@ -150,6 +165,59 @@ const Task1 = (() => {
   function clearGameplayTimers() {
     clearAnswerTimer();
     clearPunishTimer();
+    stopSocialEvalLoop();
+  }
+
+  function isTaskSessionActive() {
+    return state === "playing" || state === "punishment";
+  }
+
+  function hideSocialEval() {
+    if (socialEvalHideTimer !== null) {
+      clearTimeout(socialEvalHideTimer);
+      socialEvalHideTimer = null;
+    }
+    if (!els.socialEval) return;
+    els.socialEval.classList.add("hidden");
+    els.socialEval.setAttribute("aria-hidden", "true");
+  }
+
+  function showSocialEval() {
+    if (!els.socialEval || !els.socialEvalText || !isTaskSessionActive()) return;
+
+    const message = SOCIAL_EVAL_MESSAGES[socialEvalMessageIndex];
+    socialEvalMessageIndex =
+      (socialEvalMessageIndex + 1) % SOCIAL_EVAL_MESSAGES.length;
+
+    els.socialEvalText.textContent = message;
+    els.socialEval.classList.remove("hidden");
+    els.socialEval.setAttribute("aria-hidden", "false");
+
+    if (socialEvalHideTimer !== null) {
+      clearTimeout(socialEvalHideTimer);
+    }
+    socialEvalHideTimer = setTimeout(() => {
+      socialEvalHideTimer = null;
+      hideSocialEval();
+    }, SOCIAL_EVAL_DISPLAY);
+  }
+
+  function startSocialEvalLoop() {
+    stopSocialEvalLoop();
+    socialEvalMessageIndex = 0;
+    socialEvalInterval = setInterval(() => {
+      if (isTaskSessionActive()) {
+        showSocialEval();
+      }
+    }, SOCIAL_EVAL_INTERVAL);
+  }
+
+  function stopSocialEvalLoop() {
+    if (socialEvalInterval !== null) {
+      clearInterval(socialEvalInterval);
+      socialEvalInterval = null;
+    }
+    hideSocialEval();
   }
 
   function updateTimerUI(elapsed) {
@@ -211,6 +279,12 @@ const Task1 = (() => {
     els.briefing.setAttribute("aria-hidden", String(!show));
   }
 
+  function showCameraMonitor(show) {
+    if (!els.cameraMonitor) return;
+    els.cameraMonitor.classList.toggle("hidden", !show);
+    els.cameraMonitor.setAttribute("aria-hidden", String(!show));
+  }
+
   function updateBriefingContent(minutes) {
     if (els.briefingDuration) els.briefingDuration.textContent = minutes;
     if (!els.briefingMode) return;
@@ -222,6 +296,8 @@ const Task1 = (() => {
   }
 
   function startGameplay() {
+    showCameraMonitor(true);
+    startSocialEvalLoop();
     session.start(DurationSetting.toMs(pendingSessionMinutes));
     beginRound();
   }
@@ -348,6 +424,7 @@ const Task1 = (() => {
 
   function dismissSummary() {
     state = "idle";
+    showCameraMonitor(false);
     showSummary(false);
     resetDisplay();
     resetGoalPreview();
@@ -449,12 +526,15 @@ const Task1 = (() => {
     resetDisplay();
     session.resetUI();
     recoverStuckUI();
+    showCameraMonitor(false);
+    hideSocialEval();
   }
 
   function stop() {
     clearGameplayTimers();
     if (session) session.clear();
     showBriefing(false);
+    showCameraMonitor(false);
     state = "idle";
     resetDisplay();
     resetGoalPreview();
