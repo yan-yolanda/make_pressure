@@ -207,23 +207,11 @@ body {
 
 .social-eval-text {
   margin: 0;
-  font-size: 1.28rem;
+  font-size: 1.55rem;
   font-weight: 700;
-  line-height: 1.45;
+  line-height: 1.4;
   color: #ff4d5e;
-  animation: social-eval-blink 0.55s ease-in-out infinite;
-}
-
-@keyframes social-eval-blink {
-  0%,
-  100% {
-    opacity: 1;
-    text-shadow: 0 0 10px rgba(255, 77, 94, 0.45);
-  }
-  50% {
-    opacity: 0.35;
-    text-shadow: none;
-  }
+  text-shadow: 0 0 12px rgba(255, 77, 94, 0.35);
 }
 
 .task-header {
