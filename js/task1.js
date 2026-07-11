@@ -37,6 +37,7 @@ const Task1 = (() => {
   let pendingSessionMinutes = DEFAULT_SESSION_MINUTES;
   let session = null;
   let numberMode = "random"; // random | fixed
+  let randomDigitCount = 4; // 3 | 4
   let fixedStartNumber = DEFAULT_FIXED_START;
 
   const els = {};
@@ -58,8 +59,12 @@ const Task1 = (() => {
     els.durationInput = $("t1-duration");
     els.modeRandom = $("t1-mode-random");
     els.modeFixed = $("t1-mode-fixed");
+    els.randomSetting = $("t1-random-setting");
+    els.randomDigit4 = $("t1-random-4");
+    els.randomDigit3 = $("t1-random-3");
     els.fixedSetting = $("t1-fixed-setting");
     els.fixedStartInput = $("t1-fixed-start");
+    els.fixedGenerateBtn = $("t1-fixed-generate");
     els.goalInitialInput = $("t1-goal-initial");
     els.goalTargetEl = $("t1-goal-target");
     els.maxStreakEl = $("t1-max-streak");
@@ -83,8 +88,20 @@ const Task1 = (() => {
     return Math.floor(Math.random() * 9000) + 1000;
   }
 
+  function randomThreeDigit() {
+    return Math.floor(Math.random() * 900) + 100;
+  }
+
   function readNumberMode() {
     return els.modeFixed.checked ? "fixed" : "random";
+  }
+
+  function readRandomDigitCount() {
+    return els.randomDigit3.checked ? 3 : 4;
+  }
+
+  function randomNumberByDigits() {
+    return randomDigitCount === 3 ? randomThreeDigit() : randomFourDigit();
   }
 
   function readFixedStartNumber() {
@@ -135,12 +152,31 @@ const Task1 = (() => {
 
   function updateModeUI() {
     const isFixed = readNumberMode() === "fixed";
-    els.fixedStartInput.disabled = !isFixed;
+    const canEdit = state === "idle";
+
+    els.fixedStartInput.disabled = !isFixed || !canEdit;
+    if (els.fixedGenerateBtn) els.fixedGenerateBtn.disabled = !isFixed || !canEdit;
+
     els.fixedSetting.classList.toggle("is-disabled", !isFixed);
+
+    if (els.randomSetting) {
+      const randomInputs = els.randomSetting.querySelectorAll("input");
+      randomInputs.forEach((input) => {
+        input.disabled = isFixed || !canEdit;
+      });
+      els.randomSetting.classList.toggle("is-disabled", isFixed);
+    }
+  }
+
+  function generateFixedStartNumber() {
+    if (state !== "idle" || readNumberMode() !== "fixed") return;
+    const n = randomFourDigit();
+    fixedStartNumber = n;
+    els.fixedStartInput.value = n;
   }
 
   function nextStartNumber() {
-    return numberMode === "fixed" ? fixedStartNumber : randomFourDigit();
+    return numberMode === "fixed" ? fixedStartNumber : randomNumberByDigits();
   }
 
   function clearAnswerTimer() {
@@ -291,7 +327,7 @@ const Task1 = (() => {
     if (numberMode === "fixed") {
       els.briefingMode.textContent = `固定四位数（起始 ${fixedStartNumber}）`;
     } else {
-      els.briefingMode.textContent = "随机四位数";
+      els.briefingMode.textContent = randomDigitCount === 3 ? "随机三位数" : "随机四位数";
     }
   }
 
@@ -312,6 +348,7 @@ const Task1 = (() => {
     updateBriefingContent(pendingSessionMinutes);
     showSummary(false);
     showStartPanel(false);
+    updateModeUI();
 
     if (els.briefing && els.briefingBtn) {
       showBriefing(true);
@@ -430,6 +467,7 @@ const Task1 = (() => {
     resetGoalPreview();
     syncDurationPreview();
     showStartPanel(true);
+    updateModeUI();
   }
 
   function syncDurationPreview() {
@@ -466,6 +504,7 @@ const Task1 = (() => {
     }
 
     numberMode = readNumberMode();
+    randomDigitCount = readRandomDigitCount();
     if (numberMode === "fixed") {
       const fixedStart = readFixedStartNumber();
       if (fixedStart === null) {
@@ -497,6 +536,11 @@ const Task1 = (() => {
     els.summaryBtn.addEventListener("click", dismissSummary);
     els.modeRandom.addEventListener("change", updateModeUI);
     els.modeFixed.addEventListener("change", updateModeUI);
+    if (els.randomDigit4) els.randomDigit4.addEventListener("change", updateModeUI);
+    if (els.randomDigit3) els.randomDigit3.addEventListener("change", updateModeUI);
+    if (els.fixedGenerateBtn) {
+      els.fixedGenerateBtn.addEventListener("click", generateFixedStartNumber);
+    }
     els.durationInput.addEventListener("input", () => {
       if (state === "idle") syncDurationPreview();
     });
@@ -540,6 +584,7 @@ const Task1 = (() => {
     resetGoalPreview();
     syncDurationPreview();
     showStartPanel(true);
+    updateModeUI();
   }
 
   function recoverStuckUI() {

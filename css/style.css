@@ -815,15 +815,58 @@ body.questionnaire-open .start-panel {
   accent-color: var(--accent);
 }
 
+.random-digit-setting {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  padding: 4px 0 0 4px;
+}
+
+.random-digit-setting.is-disabled {
+  opacity: 0.45;
+}
+
+.mode-sub-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.mode-options--sub {
+  gap: 10px 14px;
+}
+
 .fixed-start-setting {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
   padding-top: 4px;
 }
 
 .fixed-start-setting.is-disabled {
   opacity: 0.45;
+}
+
+.mode-action-btn {
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: rgba(255, 107, 74, 0.15);
+  color: var(--accent);
+  border: 1px solid rgba(255, 107, 74, 0.35);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.mode-action-btn:hover:not(:disabled) {
+  background: rgba(255, 107, 74, 0.25);
+}
+
+.mode-action-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .start-btn {

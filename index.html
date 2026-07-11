@@ -97,14 +97,27 @@
             <div class="mode-options">
               <label class="mode-option">
                 <input type="radio" name="t1-mode" id="t1-mode-random" value="random" checked />
-                <span>随机四位数</span>
+                <span>随机数</span>
               </label>
               <label class="mode-option">
                 <input type="radio" name="t1-mode" id="t1-mode-fixed" value="fixed" />
                 <span>固定四位数</span>
               </label>
             </div>
-            <div class="fixed-start-setting" id="t1-fixed-setting">
+            <div class="random-digit-setting" id="t1-random-setting">
+              <span class="mode-sub-label">位数</span>
+              <div class="mode-options mode-options--sub">
+                <label class="mode-option">
+                  <input type="radio" name="t1-random-digit" id="t1-random-4" value="4" checked />
+                  <span>四位数</span>
+                </label>
+                <label class="mode-option">
+                  <input type="radio" name="t1-random-digit" id="t1-random-3" value="3" />
+                  <span>三位数</span>
+                </label>
+              </div>
+            </div>
+            <div class="fixed-start-setting is-disabled" id="t1-fixed-setting">
               <label class="duration-label" for="t1-fixed-start">起始数字</label>
               <input
                 type="number"
@@ -115,6 +128,7 @@
                 value="1022"
                 disabled
               />
+              <button type="button" class="mode-action-btn" id="t1-fixed-generate" disabled>生成新数字</button>
             </div>
           </div>
           <div class="duration-setting">
@@ -283,7 +297,7 @@
           <h3>任务 1 · 心算减法</h3>
           <ul>
             <li>点击「开始任务」后，任务持续设定时长（默认 <strong>5 分钟</strong>）。</li>
-            <li>支持两种出题模式：<strong>随机四位数</strong>（每次出错后重新随机）或 <strong>固定四位数</strong>（默认从 1022 开始，出错后回到该起始数字）。</li>
+            <li>支持两种出题模式：<strong>随机数</strong>（可选四位数或三位数，每次出错后重新随机）或 <strong>固定四位数</strong>（可手动输入或点击「生成新数字」，出错后回到该起始数字）。</li>
             <li>系统将记录本次任务中的<strong>最大连续答对次数</strong>作为任务结果，并依据表现进行津贴发放。</li>
             <li>你需要计算当前数字减去 <strong>13</strong> 的结果。</li>
             <li>在 <strong>5 秒</strong>内输入答案并回车（或点击确认）；最后 <strong>3 秒</strong>会播放倒计时音效。</li>
