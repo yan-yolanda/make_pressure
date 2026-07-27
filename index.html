@@ -15,15 +15,7 @@
           帮助
         </button>
       </div>
-      <nav class="main-tabs" role="tablist" aria-label="页面切换">
-        <button class="main-tab-btn active" id="task-tab" data-view="task" role="tab" aria-selected="true" aria-controls="task-view">
-          任务
-        </button>
-        <button class="main-tab-btn" id="rest-tab" data-view="rest" role="tab" aria-selected="false" aria-controls="rest-view">
-          静息
-        </button>
-      </nav>
-      <nav class="pagination task-tabs" id="task-view" role="tablist" aria-label="任务切换">
+      <nav class="pagination" role="tablist" aria-label="页面切换">
         <button class="page-btn active" data-page="1" role="tab" aria-selected="true">
           任务 1 · 心算减法
         </button>
@@ -33,11 +25,14 @@
         <button class="page-btn" data-page="3" role="tab" aria-selected="false">
           任务 3 · 表情模仿
         </button>
+        <button class="page-btn" id="rest-tab" data-page="rest" role="tab" aria-selected="false" aria-controls="rest-view">
+          静息
+        </button>
       </nav>
     </header>
 
     <!-- Rest -->
-    <section id="rest-view" class="rest-page" role="tabpanel" aria-labelledby="rest-tab" hidden>
+    <section id="rest-view" class="task-page rest-page" role="tabpanel" aria-labelledby="rest-tab" hidden>
       <div class="rest-fixation" aria-label="静息注视区域">
         <span class="rest-fixation-cross" aria-hidden="true">+</span>
       </div>
